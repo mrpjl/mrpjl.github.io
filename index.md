@@ -3,4 +3,4 @@ Content Pages
 
 #### Contents
 
-- [Bookmarks](./articles/bookmark.md)
+1. [Bookmarks](./articles/bookmark.md)
