@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- <a href='https://cors-anywhere.herokuapp.com/corsdemo' target="_blank">GitHub</a> -->
+  <h2>Percentage Calculator</h2>
+  <label for="value">Enter Amount:</label>
+  <input type="number" id="amount" name="value" placeholder="Enter a number">
+
+  <button onclick="calculate()">Calculate</button>
+
+  <p id="nb_value"></p>
+  <p id="nb_result"></p>
+  <p id="jb_value"></p>
+  <p id="jb_result"></p>
+  <p id="midb_value"></p>
+  <p id="midb_result"></p>
+</div>
+
+<script>
+function fetchData(input, symbol, idd) {
+    // Construct the API URL with the symbol variable
+    const apiUrl = `https://api.allorigins.win/raw?url=https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
+
+
+    fetch(apiUrl)
+        .then(response => response.json()) // Parse JSON
+        .then(data => {
+            // Extract regularMarketPrice
+            const regularMarketPrice = data.chart.result[0].meta.regularMarketPrice;
+
+            // Calculate the number of shares.
+            var final_res = (input / regularMarketPrice).toFixed(0);
+
+
+            // Display the data in the HTML
+            const apiDataDiv = document.getElementById(idd);
+            apiDataDiv.innerHTML = `Regular Market Price for <b>${symbol}</b> is ${regularMarketPrice}, you need to buy <b>${final_res}</b> shares`;
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+function calculate() {
+  var inputValue = parseFloat(document.getElementById("amount").value);
+  var percentage = 20; // Predefined percentage amount (you can change this value)
+  var niftybees = 38.32;
+  var juniorbees = 37.78;
+  var mid150bees = 23.88;
+
+  if (!isNaN(inputValue)) {
+    var result1 = inputValue * (niftybees / 100);
+    var result2 = inputValue * (juniorbees / 100);
+    var result3 = inputValue * (mid150bees / 100);
+    document.getElementById("nb_value").innerHTML = "The " + niftybees + "% of " + inputValue + " amounts to " + result1.toFixed(2);
+    fetchData(result1, 'NIFTYBEES', 'nb_result');
+    document.getElementById("jb_value").innerHTML = "The " + juniorbees + "% of " + inputValue + " amounts to " + result2.toFixed(2);
+    fetchData(result2, 'JUNIORBEES', 'jb_result');
+    document.getElementById("midb_value").innerHTML = "The " + mid150bees + "% of " + inputValue + " amounts to " + result3.toFixed(2);
+    fetchData(result3, 'MID150BEES', 'midb_result');
+  } else {
+    document.getElementById("result").innerHTML = "Please enter a valid number.";
+  }
+}
+</script>
+
+</body>
+</html>
+
