@@ -51,6 +51,10 @@
   <p id="jb_result"></p>
   <p id="midb_value"></p>
   <p id="midb_result"></p>
+  <p id="mom30_value"></p>
+  <p id="mom30_result"></p>
+  <p id="fang_value"></p>
+  <p id="fang_result"></p>
 </div>
 
 <script>
@@ -80,21 +84,27 @@ function fetchData(input, symbol, idd) {
 
 function calculate() {
   var inputValue = parseFloat(document.getElementById("amount").value);
-  var percentage = 20; // Predefined percentage amount (you can change this value)
+  var percentage = 10; // Predefined percentage amount (you can change this value)
+  var otherValue = (inputValue * percentage) / 100;
+  var newValue = inputValue - (otherValue);
   var niftybees = 42.72;
   var juniorbees = 16.66;
   var mid150bees = 40.60;
 
   if (!isNaN(inputValue)) {
-    var result1 = inputValue * (niftybees / 100);
-    var result2 = inputValue * (juniorbees / 100);
-    var result3 = inputValue * (mid150bees / 100);
+    var result1 = newValue * (niftybees / 100);
+    var result2 = newValue * (juniorbees / 100);
+    var result3 = newValue * (mid150bees / 100);
     document.getElementById("nb_value").innerHTML = "The " + niftybees + "% of " + inputValue + " amounts to " + result1.toFixed(2);
     fetchData(result1, 'NIFTYBEES', 'nb_result');
     document.getElementById("jb_value").innerHTML = "The " + juniorbees + "% of " + inputValue + " amounts to " + result2.toFixed(2);
     fetchData(result2, 'JUNIORBEES', 'jb_result');
     document.getElementById("midb_value").innerHTML = "The " + mid150bees + "% of " + inputValue + " amounts to " + result3.toFixed(2);
     fetchData(result3, 'MID150BEES', 'midb_result');
+    document.getElementById("mom30_value").innerHTML = "The 100% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    fetchData(otherValue, 'MOM30IETF', 'mom30_result');
+    // document.getElementById("fang_value").innerHTML = "The 100% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    // fetchData(otherValue, 'MAFANG', 'fang_result');
   } else {
     document.getElementById("result").innerHTML = "Please enter a valid number.";
   }
