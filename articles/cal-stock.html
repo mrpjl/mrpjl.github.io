@@ -46,15 +46,15 @@
   <button onclick="calculate()">Calculate</button>
 
   <p id="nb_value"></p>
-  <p id="nb_result"></p>
+  <p style="color: red;" id="nb_result"></p>
   <p id="jb_value"></p>
-  <p id="jb_result"></p>
+  <p style="color: red;" id="jb_result"></p>
   <p id="midb_value"></p>
-  <p id="midb_result"></p>
+  <p style="color: red;" id="midb_result"></p>
   <p id="mom30_value"></p>
-  <p id="mom30_result"></p>
-  <p id="fang_value"></p>
-  <p id="fang_result"></p>
+  <p style="color: red;" id="mom30_result"></p>
+  <p id="it_value"></p>
+  <p style="color: red;" id="it_result"></p>
 </div>
 
 <script>
@@ -75,7 +75,8 @@ function fetchData(input, symbol, idd) {
 
             // Display the data in the HTML
             const apiDataDiv = document.getElementById(idd);
-            apiDataDiv.innerHTML = `Regular Market Price for <b>${symbol}</b> is ${regularMarketPrice}, you need to buy <b>${final_res}</b> shares`;
+            //apiDataDiv.innerHTML = `Regular Market Price for <b>${symbol}</b> is ${regularMarketPrice}, you need to buy <b>${final_res}</b> shares`;
+            apiDataDiv.innerHTML = `Purchase <b>${final_res}</b> shares of <b>${symbol}</b>, based on a price of ${regularMarketPrice}.`;
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -86,7 +87,7 @@ function calculate() {
   var inputValue = parseFloat(document.getElementById("amount").value);
   var percentage = 10; // Predefined percentage amount (you can change this value)
   var otherValue = (inputValue * percentage) / 100;
-  var newValue = inputValue - (otherValue);
+  var newValue = inputValue - (2 * otherValue);
   var niftybees = 42.72;
   var juniorbees = 16.66;
   var mid150bees = 40.60;
@@ -95,16 +96,16 @@ function calculate() {
     var result1 = newValue * (niftybees / 100);
     var result2 = newValue * (juniorbees / 100);
     var result3 = newValue * (mid150bees / 100);
-    document.getElementById("nb_value").innerHTML = "The " + niftybees + "% of " + inputValue + " amounts to " + result1.toFixed(2);
+    document.getElementById("nb_value").innerHTML = "The " + niftybees + "% of " + newValue + " amounts to " + result1.toFixed(2);
     fetchData(result1, 'NIFTYBEES', 'nb_result');
-    document.getElementById("jb_value").innerHTML = "The " + juniorbees + "% of " + inputValue + " amounts to " + result2.toFixed(2);
+    document.getElementById("jb_value").innerHTML = "The " + juniorbees + "% of " + newValue + " amounts to " + result2.toFixed(2);
     fetchData(result2, 'JUNIORBEES', 'jb_result');
-    document.getElementById("midb_value").innerHTML = "The " + mid150bees + "% of " + inputValue + " amounts to " + result3.toFixed(2);
+    document.getElementById("midb_value").innerHTML = "The " + mid150bees + "% of " + newValue + " amounts to " + result3.toFixed(2);
     fetchData(result3, 'MID150BEES', 'midb_result');
-    document.getElementById("mom30_value").innerHTML = "The 100% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    document.getElementById("mom30_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
     fetchData(otherValue, 'MOM30IETF', 'mom30_result');
-    // document.getElementById("fang_value").innerHTML = "The 100% of " + inputValue + " amounts to " + otherValue.toFixed(2);
-    // fetchData(otherValue, 'MAFANG', 'fang_result');
+    document.getElementById("it_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    fetchData(otherValue, 'ITBEES', 'it_result');
   } else {
     document.getElementById("result").innerHTML = "Please enter a valid number.";
   }
