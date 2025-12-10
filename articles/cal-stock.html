@@ -62,10 +62,10 @@
   <p style="color: red;" id="jb_result"></p>
   <p id="midb_value"></p>
   <p style="color: red;" id="midb_result"></p>
-  <p id="cpse_value"></p>
+  <!-- <p id="cpse_value"></p>
   <p style="color: red;" id="mom30_result"></p>
   <p id="consume_value"></p>
-  <p style="color: red;" id="it_result"></p>
+  <p style="color: red;" id="it_result"></p> -->
 </div>
 
 <script>
@@ -96,12 +96,12 @@ function fetchData(input, symbol, idd) {
 
 function calculate() {
   var inputValue = parseFloat(document.getElementById("amount").value);
-  var percentage = 10; // Predefined percentage amount (you can change this value)
+  var percentage = 0; // Predefined percentage amount (you can change this value)
   var otherValue = (inputValue * percentage) / 100;
   var newValue = inputValue - (2 * otherValue);
-  var niftybees = 25.74;
-  var juniorbees = 33.2;
-  var mid150bees = 41.06;
+  var niftybees = 32.92;
+  var juniorbees = 44.60;
+  var mid150bees = 22.48;
 
   if (!isNaN(inputValue)) {
     var result1 = newValue * (niftybees / 100);
@@ -113,10 +113,10 @@ function calculate() {
     fetchData(result2, 'JUNIORBEES', 'jb_result');
     document.getElementById("midb_value").innerHTML = "The " + mid150bees + "% of " + newValue + " amounts to " + result3.toFixed(2);
     fetchData(result3, 'MID150BEES', 'midb_result');
-    document.getElementById("cpse_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
-    fetchData(otherValue, 'CPSEETF', 'mom30_result');
-    document.getElementById("consume_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
-    fetchData(otherValue, 'CONSUMIETF', 'it_result');
+    // document.getElementById("cpse_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    // fetchData(otherValue, 'CPSEETF', 'mom30_result');
+    // document.getElementById("consume_value").innerHTML = "The 10% of " + inputValue + " amounts to " + otherValue.toFixed(2);
+    // fetchData(otherValue, 'CONSUMIETF', 'it_result');
   } else {
     document.getElementById("result").innerHTML = "Please enter a valid number.";
   }
