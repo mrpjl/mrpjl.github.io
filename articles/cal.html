@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit-Based Portfolio Rebalance</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+  .container { max-width: 700px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  input[type="number"] { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
+  button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;}
+  button:hover { background-color: #45a049; }
+  table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+  table, th, td { border: 1px solid #ddd; }
+  th, td { padding: 8px; text-align: center; }
+  th { background-color: #f2f2f2; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Unit-Based Portfolio Rebalancing Calculator</h2>
+
+  <label>New Investment Amount (₹):</label>
+  <input type="number" id="newInvestment" placeholder="Enter new investment amount">
+
+  <h3>Target Allocation</h3>
+  <div id="targetDisplay"></div>
+
+  <h3>Units Held (Current Holdings)</h3>
+  <div id="assetInputs"></div>
+
+  <button onclick="calculate()">Rebalance</button>
+
+  <hr>
+
+  <h3>Rebalance Result</h3>
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>Asset</th>
+        <th>Units Held</th>
+        <th>Invest ₹</th>
+        <th>New Value ₹</th>
+        <th>Portfolio %</th>
+        <th>Shares to Buy</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+function round2(num){ return Math.round(num*100)/100; }
+
+// ======= Define Assets Here =======
+const assets = [
+  { name: "NIFTYBEES", weight: 0.3297 },
+  { name: "JUNIORBEES", weight: 0.5016 },
+  { name: "MID150BEES", weight: 0.1685 }
+  // Add more assets here if needed
+];
+
+// ======= Generate UI =======
+window.onload = function(){
+  // Target allocation
+  let targetHTML = "<ul>";
+  assets.forEach(a=>{ targetHTML += `<li>${a.name}: ${(a.weight*100).toFixed(2)}%</li>`; });
+  targetHTML += "</ul>";
+  document.getElementById("targetDisplay").innerHTML = targetHTML;
+
+  // Units input
+  let inputHTML = "";
+  assets.forEach((a,i)=>{
+    inputHTML += `<label>${a.name} Units Held:</label><input type="number" id="unit_${i}" placeholder="Enter number of units">`;
+  });
+  document.getElementById("assetInputs").innerHTML = inputHTML;
+};
+
+// ======= Fetch Yahoo Price with Dual Proxy + Retry =======
+async function fetchYahoo(symbol, retries=2, delay=1000){
+  const urls = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`)}`,
+    `https://cors-anywhere.herokuapp.com/https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`
+  ];
+
+  for (let urlIndex=0; urlIndex<urls.length; urlIndex++){
+    let attempt = 0;
+    while(attempt <= retries){
+      try {
+        const res = await fetch(urls[urlIndex]);
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const price = data.chart.result[0].meta.regularMarketPrice;
+        return price;
+      } catch(err){
+        console.warn(`Fetch failed for ${symbol} via ${urls[urlIndex]} attempt ${attempt+1}:`, err.message);
+        attempt++;
+        if(attempt <= retries) await new Promise(r=>setTimeout(r, delay));
+      }
+    }
+  }
+  throw new Error(`Failed to fetch price for ${symbol} from all proxies.`);
+}
+
+// ======= Fetch Shares =======
+async function fetchShares(amount, symbol){
+  if(amount <=0) return "—";
+  try{
+    const price = await fetchYahoo(symbol);
+    const shares = Math.floor(amount / price);
+    return `${shares} @ ₹${price}`;
+  } catch(err){
+    console.error(err.message);
+    return "Error fetching price";
+  }
+}
+
+// ======= Main Calculation =======
+async function calculate(){
+  let newInvestment = parseFloat(document.getElementById("newInvestment").value) || 0;
+
+  // Fetch live prices for all assets
+  let prices = await Promise.all(assets.map(a=>fetchYahoo(a.name)));
+
+  // Compute current values from units
+  let current = assets.map((a,i)=>{
+    const units = parseFloat(document.getElementById(`unit_${i}`).value) || 0;
+    return round2(units * prices[i]);
+  });
+
+  let totalCurrent = current.reduce((a,b)=>a+b,0);
+  let totalAfter = round2(totalCurrent + newInvestment);
+
+  // Max invest allowed
+  let maxInvest = assets.map((a,i)=>{
+    let targetValue = round2(totalAfter * a.weight);
+    return round2(Math.max(0, targetValue - current[i]));
+  });
+
+  let totalRequired = round2(maxInvest.reduce((a,b)=>a+b,0));
+
+  let invest = new Array(assets.length).fill(0);
+  if(totalRequired === 0) invest.fill(0);
+  else if(newInvestment >= totalRequired) invest = maxInvest;
+  else{
+    for(let i=0;i<assets.length-1;i++){
+      invest[i] = round2((maxInvest[i]/totalRequired)*newInvestment);
+    }
+    let sumFirst = invest.slice(0,-1).reduce((a,b)=>a+b,0);
+    invest[assets.length-1] = round2(newInvestment - sumFirst);
+  }
+
+  // New values and final %
+  let newValues = current.map((v,i)=> round2(v + invest[i]));
+  let finalPercents = newValues.map(v=> totalAfter===0?0:round2((v/totalAfter)*100));
+
+  // Render Table
+  let tbody = document.querySelector("#resultTable tbody");
+  tbody.innerHTML = "";
+
+  for(let i=0;i<assets.length;i++){
+    const unitsHeld = parseFloat(document.getElementById(`unit_${i}`).value) || 0;
+    const sharesText = await fetchShares(invest[i], assets[i].name);
+
+    tbody.innerHTML += `<tr>
+      <td>${assets[i].name}</td>
+      <td>${unitsHeld}</td>
+      <td>₹${invest[i]}</td>
+      <td>₹${newValues[i]}</td>
+      <td>${finalPercents[i]}%</td>
+      <td>${sharesText}</td>
+    </tr>`;
+  }
+}
+</script>
+
+</body>
+</html>
+

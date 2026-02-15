@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VMDSVQTTP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VMDSVQTTP4');
+</script>
+
+</head>
+<body>
+
+<div class="container">
+  <h2>Portfolio Rebalancing Calculator</h2>
+
+  <label>New Investment Amount:</label>
+  <input type="number" id="newInvestment" placeholder="Enter new investment">
+
+  <h3>Target Allocation</h3>
+  <div id="targetDisplay"></div>
+
+  <h3>Current Investments</h3>
+  <div id="assetInputs"></div>
+
+  <button onclick="calculate()">Rebalance</button>
+
+  <hr>
+
+  <h3>Rebalance Result</h3>
+  <table border="1" width="100%" cellpadding="5" id="resultTable">
+    <thead>
+      <tr>
+        <th>Asset</th>
+        <th>Invest</th>
+        <th>New Value</th>
+        <th>Final %</th>
+        <th>Shares</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+<script>
+function round2(num){
+  return Math.round(num * 100) / 100;
+}
+
+// ======= DEFINE ASSETS HERE =======
+const assets = [
+  { name: "NIFTYBEES", weight: 0.3297 },
+  { name: "JUNIORBEES", weight: 0.5016 },
+  { name: "MID150BEES", weight: 0.1685 }
+];
+// Add more assets here anytime
+
+// ======= AUTO GENERATE UI =======
+window.onload = function(){
+
+  // Show target allocation
+  let targetHTML = "<ul>";
+  assets.forEach(a=>{
+    targetHTML += `<li>${a.name} : ${(a.weight*100).toFixed(2)}%</li>`;
+  });
+  targetHTML += "</ul>";
+  document.getElementById("targetDisplay").innerHTML = targetHTML;
+
+  // Create current input boxes
+  let inputHTML = "";
+  assets.forEach((a,i)=>{
+    inputHTML += `
+      <label>${a.name} Current Value:</label>
+      <input type="number" id="current_${i}" placeholder="Enter current value">
+    `;
+  });
+  document.getElementById("assetInputs").innerHTML = inputHTML;
+};
+
+// ======= FETCH SHARE DATA =======
+async function fetchShares(amount, symbol){
+  if (amount <= 0) return "—";
+
+  const apiUrl =
+   `https://api.allorigins.win/raw?url=https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    const price = data.chart.result[0].meta.regularMarketPrice;
+    const shares = Math.floor(amount / price);
+    return `${shares} @ ₹${price}`;
+  } catch {
+    return "Error";
+  }
+}
+
+// ======= MAIN CALCULATION =======
+async function calculate(){
+
+  let newInvestment =
+    parseFloat(document.getElementById("newInvestment").value) || 0;
+
+  let current = assets.map((a,i)=>
+    parseFloat(document.getElementById(`current_${i}`).value) || 0
+  );
+
+  let totalCurrent = current.reduce((a,b)=>a+b,0);
+  let totalAfter = round2(totalCurrent + newInvestment);
+
+  // Max Invest Allowed
+  let maxInvest = assets.map((a,i)=>{
+    let targetValue = round2(totalAfter * a.weight);
+    return round2(Math.max(0, targetValue - current[i]));
+  });
+
+  let totalRequired = round2(maxInvest.reduce((a,b)=>a+b,0));
+
+  let invest = new Array(assets.length).fill(0);
+
+  if (totalRequired === 0){
+    invest.fill(0);
+  }
+  else if (newInvestment >= totalRequired){
+    invest = maxInvest;
+  }
+  else{
+    for (let i=0; i<assets.length-1; i++){
+      invest[i] = round2((maxInvest[i]/totalRequired)*newInvestment);
+    }
+    // rounding correction on last asset
+    let sumFirst = invest.slice(0,-1).reduce((a,b)=>a+b,0);
+    invest[assets.length-1] = round2(newInvestment - sumFirst);
+  }
+
+  let newValues = current.map((v,i)=> round2(v + invest[i]));
+  let finalPercents = newValues.map(v=>
+    totalAfter===0 ? 0 : round2((v/totalAfter)*100)
+  );
+
+  // Render Table
+  let tbody = document.querySelector("#resultTable tbody");
+  tbody.innerHTML = "";
+
+  for (let i=0; i<assets.length; i++){
+    let sharesText = await fetchShares(invest[i], assets[i].name);
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${assets[i].name}</td>
+        <td>₹${invest[i]}</td>
+        <td>₹${newValues[i]}</td>
+        <td>${finalPercents[i]}%</td>
+        <td>${sharesText}</td>
+      </tr>
+    `;
+  }
+}
+</script>
+</body>
+</html>
+

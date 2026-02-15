@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VMDSVQTTP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VMDSVQTTP4');
+</script>
+
+</head>
+<div class="container">
+  <h2>Portfolio Rebalancing Calculator</h2>
+
+  <label>New Investment Amount:</label>
+  <input type="number" id="newInvestment" placeholder="Enter new investment">
+
+  <label>Current Investment - NIFTYBEES:</label>
+  <input type="number" id="current1" placeholder="Current amount in NIFTYBEES">
+
+  <label>Current Investment - JUNIORBEES:</label>
+  <input type="number" id="current2" placeholder="Current amount in JUNIORBEES">
+
+  <label>Current Investment - MID150BEES:</label>
+  <input type="number" id="current3" placeholder="Current amount in MID150BEES">
+
+  <button onclick="calculate()">Rebalance</button>
+
+  <hr>
+
+  <p id="nb_value"></p>
+  <p style="color:red;" id="nb_result"></p>
+
+  <p id="jb_value"></p>
+  <p style="color:red;" id="jb_result"></p>
+
+  <p id="midb_value"></p>
+  <p style="color:red;" id="midb_result"></p>
+</div>
+
+<script>
+function round2(num){
+  return Math.round(num * 100) / 100;
+}
+
+function fetchData(input, symbol, idd) {
+  if (input <= 0) {
+    document.getElementById(idd).innerHTML = "No purchase required.";
+    return;
+  }
+
+  const apiUrl = `https://api.allorigins.win/raw?url=https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      const price = data.chart.result[0].meta.regularMarketPrice;
+      var shares = Math.floor(input / price);
+
+      document.getElementById(idd).innerHTML =
+        `Buy <b>${shares}</b> shares at ₹${price}`;
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+}
+
+function calculate() {
+
+  const weights = [0.3297, 0.5016, 0.1685];
+  const symbols = ["NIFTYBEES", "JUNIORBEES", "MID150BEES"];
+
+  let current = [
+    parseFloat(document.getElementById("current1").value) || 0,
+    parseFloat(document.getElementById("current2").value) || 0,
+    parseFloat(document.getElementById("current3").value) || 0
+  ];
+
+  let newInvestment = parseFloat(document.getElementById("newInvestment").value) || 0;
+
+  let totalCurrent = current.reduce((a,b)=>a+b,0);
+  let totalAfter = round2(totalCurrent + newInvestment);
+
+  // Step 1: Max Invest Allowed
+  let maxInvest = current.map((value, i) => {
+    let targetValue = round2(totalAfter * weights[i]);
+    return round2(Math.max(0, targetValue - value));
+  });
+
+  let totalRequired = round2(maxInvest.reduce((a,b)=>a+b,0));
+
+  let invest = [0,0,0];
+
+  if (totalRequired === 0) {
+    invest = [0,0,0];
+  }
+  else if (newInvestment >= totalRequired) {
+    invest = maxInvest;
+  }
+  else {
+    for (let i=0; i<2; i++) {
+      invest[i] = round2((maxInvest[i] / totalRequired) * newInvestment);
+    }
+    invest[2] = round2(newInvestment - invest[0] - invest[1]);
+  }
+
+  // New values after investment
+  let newValues = current.map((value,i)=> round2(value + invest[i]));
+
+  // Final percentages
+  let finalPercents = newValues.map(value =>
+    totalAfter === 0 ? 0 : round2((value / totalAfter) * 100)
+  );
+
+  // Display results
+  const ids = ["nb","jb","midb"];
+
+  for (let i=0; i<3; i++) {
+    document.getElementById(ids[i] + "_value").innerHTML =
+      `Invest ₹${invest[i]} | New Value: ₹${newValues[i]} | Portfolio: ${finalPercents[i]}%`;
+
+    fetchData(invest[i], symbols[i], ids[i] + "_result");
+  }
+}
+</script>
+
+</html>
+
