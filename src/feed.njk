@@ -1,0 +1,27 @@
+---
+permalink: feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+
+<title>{{ site.title }}</title>
+
+<link>https://mrpjl.github.io</link>
+
+<description>{{ site.description }}</description>
+
+{% for post in collections.post | reverse %}
+
+<item>
+<title>{{ post.data.title }}</title>
+<link>https://mrpjl.github.io{{ post.url }}</link>
+<pubDate>{{ post.date }}</pubDate>
+<description>{{ post.data.description }}</description>
+</item>
+
+{% endfor %}
+
+</channel>
+</rss>

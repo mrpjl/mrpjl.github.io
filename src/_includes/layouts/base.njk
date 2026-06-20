@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>
+    {% if title %}
+      {{ title }} | {{ site.title }}
+    {% else %}
+      {{ site.title }}
+    {% endif %}
+  </title>
+
+  <meta name="description" content="{{ description or site.description }}">
+
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  {% if site.ga_measurement_id %}
+
+  <script async
+    src="https://www.googletagmanager.com/gtag/js?id={{ site.ga_measurement_id }}">
+  </script>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', '{{ site.ga_measurement_id }}', {
+      anonymize_ip: true
+    });
+  </script>
+
+  {% endif %}
+
+</head>
+
+<body>
+
+<body>
+
+<header>
+  <div class="header-inner">
+
+    <div class="site-title">
+      <a href="/">
+        {{ site.title }}
+      </a>
+    </div>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="/posts/">Blog</a>
+      <a href="/tags/">Tags</a>
+      <a href="/about/">About</a>
+      <a href="/resume/">Resume</a>
+    </nav>
+
+  </div>
+</header>
+
+<main>
+  {{ content | safe }}
+</main>
+
+<footer>
+  © {{ site.year }} {{ site.author }}
+</footer>
+
+</body>
+</html>

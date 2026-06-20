@@ -1,0 +1,26 @@
+---
+layout: layouts/base.njk
+---
+
+<article>
+
+  <h1>{{ title }}</h1>
+
+  <p class="meta">
+    Published: {{ date | postDate }}
+  |
+  Reading Time: {{ content | readingTime }}
+  <br>
+  {% if tags %}
+{% for tag in tags %}
+{% if tag != "post" %}
+<a href="/tags/{{ tag }}/">
+#{{ tag }}
+</a>
+{% endif %}
+{% endfor %}
+{% endif %}
+</p>
+  {{ content | safe }}
+
+</article>
