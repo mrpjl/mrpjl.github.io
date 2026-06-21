@@ -8,13 +8,14 @@ layout: layouts/post.njk
 permalink: "/posts/{{ page.fileSlug }}/"
 draft: false
 ---
-![Local Image](/assets/images/posts/data-security-frameworks/data-security-framework.png)
 
 ## Bridging the Gap: A Comparative Review of Data Security Frameworks (GDPR, HIPAA, NIST, DPDP, MeitY)
 
 I explored GDPR, HIPAA, and NIST, and then turned my focus homeward to understand India's evolving landscape with the DPDP Act and MeitY guidelines.
 
 Going through them side-by-side reveals both a shared DNA and highly distinctive operational requirements.
+
+![Local Image](/assets/images/posts/data-security-frameworks/data-security-framework.png)
 
 ### The Commons: The Core of Protection
 

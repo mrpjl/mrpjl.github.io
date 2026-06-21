@@ -3,7 +3,7 @@ permalink: feed.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
 
 <title>{{ site.title }}</title>
@@ -12,12 +12,18 @@ eleventyExcludeFromCollections: true
 
 <description>{{ site.description }}</description>
 
+<atom:link
+  href="{{ site.url }}/feed.xml"
+  rel="self"
+  type="application/rss+xml" />
+
 {% for post in collections.post | reverse %}
 
 <item>
 <title>{{ post.data.title }}</title>
 <link>https://mrpjl.github.io{{ post.url }}</link>
-<pubDate>{{ post.date }}</pubDate>
+<pubDate>{{ post.date | dateToRfc822 }}</pubDate>
+<guid>{{ site.url }}{{ post.url }}</guid>
 <description>{{ post.data.description }}</description>
 </item>
 
