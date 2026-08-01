@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="diag_HighLevel_Architecture" name="HighLevel_Architecture">
+    <mxGraphModel dx="1032" dy="612" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n2" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#CDA2BE;strokeColor=#B5739D;gradientColor=none;" value="3. Home ISP (AS 1) (Physical Routing)" vertex="1">
+          <mxGeometry height="60" width="140" x="250" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" parent="1" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="4. Internet Backbone (BGP Paths)" vertex="1">
+          <mxGeometry height="60" width="140" x="530" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="5. VPN/Proxy AS (Middleman)" vertex="1">
+          <mxGeometry height="60" width="140" x="690" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="6. Target AS (Web Service)" vertex="1">
+          <mxGeometry height="60" width="140" x="250" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=2;" value="Initial Lookup">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="300" as="sourcePoint" />
+            <mxPoint x="110" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=2;rounded=0;curved=1;" target="n2" value="Connects to">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="330" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="n2" style="endArrow=classic;html=1;strokeWidth=2;" target="n3" value="BGP Peering">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="n3" style="endArrow=classic;html=1;strokeWidth=2;" target="n4" value="BGP Path">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="n4" style="endArrow=classic;html=1;strokeWidth=2;" target="n5" value="Proxied Data Route">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_tunnel" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=3;strokeColor=#2D7600;dashed=1;curved=1;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=0;fillColor=#000000;entryX=0.5;entryY=0;entryDx=0;entryDy=0;rounded=0;" target="n4" value="Encrypted VPN Tunnel bypassing ISP visibility">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="210" />
+              <mxPoint x="760" y="210" />
+            </Array>
+            <mxPoint x="110" y="300" as="sourcePoint" />
+            <mxPoint x="760" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="W1WLvp5j4J-_zaixOZxo-2" parent="1" style="image;html=1;image=img/lib/clip_art/computers/Server_Rack_128x128.png" value="" vertex="1">
+          <mxGeometry height="80" width="80" x="70" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="W1WLvp5j4J-_zaixOZxo-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div&gt;Global DNS&lt;/div&gt;&lt;div&gt;(Providers IPs)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="100" x="130" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="W1WLvp5j4J-_zaixOZxo-4" parent="1" style="image;points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;image=img/lib/allied_telesis/computer_and_terminals/Personal_Computer.svg;" value="" vertex="1">
+          <mxGeometry height="61.800000000000004" width="45.6" x="87.2" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="W1WLvp5j4J-_zaixOZxo-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Computer (Client)" vertex="1">
+          <mxGeometry height="30" width="80" x="80" y="370" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -37,7 +37,7 @@ BGP is the routing protocol of the internet. Once you have the IP address from D
 * **Purpose:** DNS resolves names; BGP maps physical network routes.
 * **Users:** End-user devices use DNS; Enterprise routers and Internet Service Providers (ISPs) use BGP.
 
-<!-- INSERT: DNS_Resolution.drawio diagram here -->
+![DNS Resolution](/assets/images/posts/demystifying-internet-routing/DNS_Resolution.drawio.svg)
 
 ---
 
@@ -57,7 +57,7 @@ Your mobile carrier or home ISP is an Autonomous System. Your cell phone sits at
 * It dynamically "borrows" an IP address from the ISP's CIDR blocks.
 * It is a pure "end node" consumer. It just hands data to the local cell tower (the Default Gateway) and relies on the ISP's core routers to navigate the internet.
 
-<!-- INSERT: BGP_Routing.drawio diagram here -->
+![BGP Routing](/assets/images/posts/demystifying-internet-routing/BGP_Routing.drawio.svg)
 
 ---
 
@@ -88,7 +88,7 @@ Once your encrypted traffic reaches the VPN server, your home ISP's job is done.
 * **Most common scenario:** The VPN rents servers in a massive data center. The **Data Center** is the AS and handles the BGP routing to your final destination.
 * **Top-tier scenario:** The VPN company owns its hardware and registers as its own official AS, handling its own BGP routing directly for maximum privacy.
 
-<!-- INSERT: VPN_Connection.drawio diagram here -->
+![VPN Connection](/assets/images/posts/demystifying-internet-routing/VPN_Connection.drawio.svg)
 
 ### Can the Datacenter monitor my traffic?
 This is a massive privacy concern. The Datacenter AS sees your real IP address coming in, and the decrypted request to the website going out. To prevent the datacenter from linking the two (a correlation attack), VPNs use **Multiplexing** (mixing hundreds of users' traffic on one shared IP) and **RAM-Only servers** (wiping all data the second the server loses power).
@@ -107,7 +107,7 @@ If a VPN is an armored truck, a proxy is like hiring an assistant. You send an u
 * Proxies are usually app-specific (e.g., just your browser), whereas VPNs encrypt system-wide network traffic.
 * Proxies usually lack encryption, meaning your home ISP can still see exactly what you are asking the proxy to do. 
 
-<!-- INSERT: Proxy_Connection.drawio diagram here -->
+![Proxy Connection](/assets/images/posts/demystifying-internet-routing/Proxy_Connection.drawio.svg)
 
 ### Does a Proxy skip your ISP's BGP?
 Yes, just like a VPN. Your home ISP uses its BGP to get your data to the Proxy server. Then, the Datacenter where the Proxy lives uses *its* BGP to reach the final website. 
@@ -117,7 +117,6 @@ Yes. You can configure your browser to use a Proxy server, and have that Proxy s
 * **The Route:** Your Phone -> (Unencrypted) -> Proxy Server -> (Encrypted VPN Tunnel) -> Website.
 * **The Catch:** Your home ISP still sees the unencrypted traffic going to the proxy. Plus, double-routing causes severe speed and latency penalties. For maximum privacy, it is much better to reverse the order: connect your phone to a VPN first, then use a proxy inside the secure tunnel.
 
-<!-- INSERT: HighLevel_Architecture.drawio diagram here -->
-
+![HLD](/assets/images/posts/demystifying-internet-routing/HighLevel_Architecture.drawio.png)
 ---
 *Disclaimer: This post is for educational purposes to help users understand network infrastructure and privacy mechanisms.*
