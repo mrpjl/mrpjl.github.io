@@ -43,10 +43,6 @@ You'll find a mix of:
 * Project write-ups
 * Learning journals and certification notes
 
-## Disclaimer
-
-The opinions and views expressed on this blog are my own and do not represent those of my current or former employers.
-
 ## Connect
 
 If you find an error, have a suggestion, or would like to discuss a topic, feel free to reach out through GitHub or LinkedIn.

@@ -29,4 +29,11 @@ Documents I often refer in my work.
 - [GoLang Docs](https://go.dev/doc/)
 - [PrismaCloud API](https://pan.dev/prisma-cloud/api/)
 - [Cortex APIs](https://cortex-panw.stoplight.io/)
+- [AWS Config Query Schema](https://github.com/awslabs/aws-config-resource-schema/tree/master)
+- [PowerTools for AWS Lambda](https://docs.aws.amazon.com/powertools/python/latest/)
+- [AWS Security Docs](https://docs.aws.amazon.com/security/)
+- [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/) (Daily)
+- [AWS Whitepapers](https://aws.amazon.com/whitepapers/)
+- [Well Architecture Framework](https://aws.amazon.com/architecture/well-architected/) (gem!)
+
 

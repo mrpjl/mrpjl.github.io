@@ -63,5 +63,7 @@ If you've found your way here, thank you for reading.
 
 I hope you find something useful, and I hope this collection of notes grows into a valuable resource for both myself and others over time.
 
-#### The experiences shared here are my own and do not represent the views of any current or former employer.
+## Disclaimer
+
+The experiences shared here are my own and do not represent the views of any current or former employer.
 
