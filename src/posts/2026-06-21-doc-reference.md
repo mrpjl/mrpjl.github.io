@@ -28,7 +28,7 @@ Documents I often refer in my work.
 - [Python New Features](https://docs.python.org/3/whatsnew/index.html) (Nice to read always!)
 - [GoLang Docs](https://go.dev/doc/)
 - [PrismaCloud API](https://pan.dev/prisma-cloud/api/)
-- [Cortex APIs](https://cortex-panw.stoplight.io/)
+- [Cortex APIs](https://cortex-docs.paloaltonetworks.com/cortex-api-overview)
 - [AWS Config Query Schema](https://github.com/awslabs/aws-config-resource-schema/tree/master)
 - [PowerTools for AWS Lambda](https://docs.aws.amazon.com/powertools/python/latest/)
 - [AWS Security Docs](https://docs.aws.amazon.com/security/)
